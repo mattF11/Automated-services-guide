@@ -1,0 +1,154 @@
+#+TITLE: Auto-updating flatpaks and distrobox containers
+#+AUTHOR: mattF11 
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage[a4paper, margin=0.80in ]{geometry}
+#+LATEX_HEADER: \setcounter{tocdepth}{-1}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{fancyvrb}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{breaklines=false}
+#+LATEX_HEADER: \pagenumbering{roman}
+#+STARTUP: inlineimages
+
+* How to auto-update distrobox containers and flatpaks
+Today we'll talk about how to autoupdate containers,in this case distrobox containers and in addition flatpack apps as well
+#+begin_quote
+
+*DISCLAMER*: /this article is based on personal experience and official opensuse docs,use it at your own risk/
+[[https://manpages.opensuse.org/Leap-16.0/distrobox/distrobox-upgrade.1.en.html]]
+
+#+end_quote
+
+** Containers(distrobox)
+We'll use systemd services,in our case on Leap 16.1 Immutable distro,which comes with a stable base that you can build on top
+without worries and issues caused by layering,just use containers and or maybe install basic tools with system packages,flatpaks are available.
+#+begin_src bash
+
+  #command used to update distroboxes
+  distrobox-upgrade --all
+  #update all running distroboxes
+  distrobox-upgrade --all --running
+  #you can subsistute all with your distro/container name
+  distrobox-upgrade tumbleweed
+
+#+end_src
+
+
+*** Auto updates
+This is the systemd user service configuration to perform the actions you prefer automatically,it's started when all the other systemd services
+are started at boot,this is daily, set them up in: [[~/.config/systemd/user/distrobox-upgrade.service]]
+#+begin_src bash
+
+  [Unit]
+  Description=distrobox-upgrade Automatic Update
+  [Service]
+  Type=simple
+  ExecStart=distrobox-upgrade --all
+  StandardOutput=null
+
+#+end_src
+
+After setting up unit file,set up the timer for it in: [[~/.config/systemd/user/distrobox-upgrade.timer]]
+#+begin_src bash
+
+  [Unit]
+  Description=distrobox-upgrade Automatic Update Trigger
+  [Timer]
+  OnBootSec=5m
+  OnUnitInactiveSec=10d
+  Persistent=true
+  [Install]
+  WantedBy=timers.target
+
+#+end_src
+
+You can now enable and use daemon-reload:
+#+begin_src bash
+
+  systemctl --user enable distrobox-containername.service
+  systemctl --user daemon-reload && systemctl --user enable --now distrobox-upgrade.timer
+
+#+end_src
+
+
+** Applications(Flatpaks)
+Flatpaks are isolated apps,you can set them up accordingly to your needs and permissions they should have,if not enabled.
+After this guide,on leap 16.1 immutable,you'll never have to manually update again or even use the software center to do it,
+just use the pc and get the job done without renouncing to your freedom and "do whatever you want approach"....coff coff unlike windows updates... 
+In our case,we want a --noninteractive mode and --assumeyes,flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]]
+#+begin_src bash
+
+  [Unit]
+  Description=flatpak-upgrade Automatic Update
+  [Service]
+  Type=simple
+  ExecStart=flatpak update --noninteractive
+
+#+end_src
+
+#+begin_src bash
+
+  [Unit]
+  Description=flatpak-upgrade Automatic Update Trigger
+  [Timer]
+  OnBootSec=5m
+  OnUnitInactiveSec=7d
+  Persistent=true
+  [Install]
+  WantedBy=timers.target
+
+#+end_src
+
+*The second unit file is always the .timer (in this article)*
+
+You can now enable and use daemon-reload:
+#+begin_src bash
+  systemctl --user enable --now flatpak-upgrade.timer
+  systemctl --user daemon-reload && systemctl --user enable --now flatpak-upgrade.timer
+#+end_src
+
+
+** Common questions
+- *HOW CAN I REMOVE THEM?*: good question,just remove the services or disable them,obviously when not needed,easy!
+- *WHERE CAN I FIND THEM?*: you can list user services with the command: systemctl --user list-timers
+- *WHICH COMMANDS CAN I USE?*: the following list of commands is everything you'll need to manage them all
+  #+begin_src bash
+    #chech user services status using systemd
+    systemctl --user status service-name.service
+
+    #list all active services
+    systemctl --user list-units --type=service
+  #+end_src
+
+
+if you read the article until this point,congratulations!,thank you for doing so,you'll find a reward in the next section.
+
+*** Bonus:how to autorun a distrobox container
+We want to autorun a distrobox container,on immutable systems we prefer not to pollute the base with 100's of packages and deps
+that could cause issues: create service file, the only difference is what runs.
+Config file: [[~/.config/systemd/user/distrobox-autostart.service]]
+
+#+begin_src bash
+  [Unit]
+  Description=distrobox-autostart Automatic Startup
+  After=podman.socket
+  Requires=podman.socket
+
+  [Service]
+  Type=oneshot
+  RemainAfterExit=yes
+  ExecStart=/usr/bin/distrobox enter tumbleweed -- true
+  ExecStop=/usr/bin/distrobox stop tumbleweed
+  StandardOutput=null
+
+  [Install]
+  WantedBy=default.target
+#+end_src
+
+Enable the .service file as done before,this article is what i consider the final iteration of the system:
+- auto updates system packages
+- auto updates flatpaks
+- auto updates and starts distrobox container
+
