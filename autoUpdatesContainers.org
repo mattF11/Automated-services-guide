@@ -67,7 +67,7 @@ After setting up unit file,set up the timer for it in: [[~/.config/systemd/user/
 You can now enable and use daemon-reload:
 #+begin_src bash
 
-  systemctl --user enable distrobox-containername.service
+  systemctl --user enable distrobox-upgrade.service
   systemctl --user daemon-reload && systemctl --user enable --now distrobox-upgrade.timer
 
 #+end_src
