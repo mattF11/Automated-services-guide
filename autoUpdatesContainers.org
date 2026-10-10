@@ -13,7 +13,7 @@
 #+STARTUP: inlineimages
 
 * How to auto-update distrobox containers and flatpaks
-Today we'll talk about how to autoupdate containers,in this case distrobox containers and in addition flatpack apps as well
+Today we'll talk about how to autoupdate containers,in this case distrobox containers and in addition flatpak apps as well
 #+begin_quote
 
 *DISCLAMER*: /this article is based on personal experience and official opensuse docs,use it at your own risk/
