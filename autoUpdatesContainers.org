@@ -13,17 +13,17 @@
 #+STARTUP: inlineimages
 
 * How to auto-update distrobox containers and flatpaks
-Today we'll talk about how to autoupdate containers,in this case distrobox containers and in addition flatpak apps as well
+Today we'll talk about how to autoupdate containers, in this case distrobox containers and in addition flatpak apps as well
 #+begin_quote
 
-*DISCLAMER*: /this article is based on personal experience and official opensuse docs,use it at your own risk/
+*DISCLAIMER*: /this article is based on personal experience and official opensuse docs, use it at your own risk/
 [[https://manpages.opensuse.org/Leap-16.0/distrobox/distrobox-upgrade.1.en.html]]
 
 #+end_quote
 
 ** Containers(distrobox)
-We'll use systemd services,in our case on Leap 16.1 Immutable distro,which comes with a stable base that you can build on top
-without worries and issues caused by layering,just use containers and or maybe install basic tools with system packages,flatpaks are available.
+We'll use systemd services, in our case on Leap 16.1 Immutable distro, which comes with a stable base that you can build on top
+without worries and issues caused by layering, just use containers and or maybe install basic tools with system packages, flatpaks are available.
 #+begin_src bash
 
   #command used to update distroboxes
@@ -37,7 +37,7 @@ without worries and issues caused by layering,just use containers and or maybe i
 
 
 *** Auto updates
-This is the systemd user service configuration to perform the actions you prefer automatically,it's started when all the other systemd services
+This is the systemd user service configuration to perform the actions you prefer automatically, it's started when all the other systemd services
 are started at boot,this is daily, set them up in: [[~/.config/systemd/user/distrobox-upgrade.service]]
 #+begin_src bash
 
@@ -74,10 +74,10 @@ You can now enable and use daemon-reload:
 
 
 ** Applications(Flatpaks)
-Flatpaks are isolated apps,you can set them up accordingly to your needs and permissions they should have,if not enabled.
+Flatpaks are isolated apps,you can set them up according to your needs and permissions they should have, if not enabled.
 After this guide,on leap 16.1 immutable,you'll never have to manually update again or even use the software center to do it,
 just use the pc and get the job done without renouncing to your freedom and "do whatever you want approach"....coff coff unlike windows updates... 
-In our case,we want a --noninteractive mode and --assumeyes,flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]]
+In our case,we want a --noninteractive mode, flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]]
 #+begin_src bash
 
   [Unit]
@@ -111,7 +111,7 @@ You can now enable and use daemon-reload:
 
 
 ** Common questions
-- *HOW CAN I REMOVE THEM?*: good question,just remove the services or disable them,obviously when not needed,easy!
+- *HOW CAN I REMOVE THEM?*: good question,just remove the services or disable them, obviously when not needed, easy!
 - *WHERE CAN I FIND THEM?*: you can list user services with the command: systemctl --user list-timers
 - *WHICH COMMANDS CAN I USE?*: the following list of commands is everything you'll need to manage them all
   #+begin_src bash
@@ -123,10 +123,10 @@ You can now enable and use daemon-reload:
   #+end_src
 
 
-if you read the article until this point,congratulations!,thank you for doing so,you'll find a reward in the next section.
+if you read the article until this point,congratulations!, thank you for doing so, you'll find a reward in the next section.
 
 *** Bonus:how to autorun a distrobox container
-We want to autorun a distrobox container,on immutable systems we prefer not to pollute the base with 100's of packages and deps
+We want to autorun a distrobox container, on immutable systems we prefer not to pollute the base with 100's of packages and deps
 that could cause issues: create service file, the only difference is what runs.
 Config file: [[~/.config/systemd/user/distrobox-autostart.service]]
 
@@ -147,7 +147,7 @@ Config file: [[~/.config/systemd/user/distrobox-autostart.service]]
   WantedBy=default.target
 #+end_src
 
-Enable the .service file as done before,this article is what i consider the final iteration of the system:
+Enable the .service file as done before, this article is what i consider the final iteration of the system:
 - auto updates system packages
 - auto updates flatpaks
 - auto updates and starts distrobox container
