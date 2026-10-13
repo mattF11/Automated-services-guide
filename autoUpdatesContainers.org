@@ -38,7 +38,7 @@ without worries and issues caused by layering, just use containers and or maybe 
 
 *** Auto updates
 This is the systemd user service configuration to perform the actions you prefer automatically, it's started when all the other systemd services
-are started at boot,this is daily, set them up in: [[~/.config/systemd/user/distrobox-upgrade.service]]
+are started at boot, this is daily, set them up in: [[~/.config/systemd/user/distrobox-upgrade.service]]
 #+begin_src bash
 
   [Unit]
@@ -50,7 +50,7 @@ are started at boot,this is daily, set them up in: [[~/.config/systemd/user/dist
 
 #+end_src
 
-After setting up unit file,set up the timer for it in: [[~/.config/systemd/user/distrobox-upgrade.timer]]
+After setting up unit file, set up the timer for it in: [[~/.config/systemd/user/distrobox-upgrade.timer]]
 #+begin_src bash
 
   [Unit]
@@ -75,9 +75,9 @@ You can now enable and use daemon-reload:
 
 ** Applications(Flatpaks)
 Flatpaks are isolated apps,you can set them up according to your needs and permissions they should have, if not enabled.
-After this guide,on leap 16.1 immutable,you'll never have to manually update again or even use the software center to do it,
+After this guide,on leap 16.1 immutable, you'll never have to manually update again or even use the software center to do it,
 just use the pc and get the job done without renouncing to your freedom and "do whatever you want approach"....coff coff unlike windows updates... 
-In our case,we want a --noninteractive mode, flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]]
+In our case, we want a --noninteractive mode, flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]]
 #+begin_src bash
 
   [Unit]
@@ -123,7 +123,7 @@ You can now enable and use daemon-reload:
   #+end_src
 
 
-if you read the article until this point,congratulations!, thank you for doing so, you'll find a reward in the next section.
+if you read the article until this point, congratulations!, thank you for doing so, you'll find a reward in the next section.
 
 *** Bonus:how to autorun a distrobox container
 We want to autorun a distrobox container, on immutable systems we prefer not to pollute the base with 100's of packages and deps
