@@ -132,6 +132,8 @@ Environment=XDG_DATA_DIRS=/var/lib/flatpak/exports/share:/usr/local/share:/usr/s
 ExecStart=/usr/bin/flatpak --system update --noninteractive
 
 #+end_src
+
+#+begin_src bash
 [Unit]
 Description=flatpak-system-upgrade Automatic Update
 
@@ -144,7 +146,6 @@ ExecStart=flatpak update --noninteractive
 
 [Install]
 WantedBy=timers.target
-#+begin_src bash
 #+end_src
 
 #+begin_src bash
