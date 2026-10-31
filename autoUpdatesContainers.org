@@ -25,6 +25,14 @@ We'll use systemd services, in our case on Leap 16.1 Immutable distro, which com
 without worries and issues caused by layering, just use containers and or maybe install basic tools with system packages, flatpaks are available.
 
 #+begin_src bash
+  #just in case you don't have distrobox installed(opensuse)
+  sudo zypper install distrobox podman
+  #on immutable opensuse distros you use transactional-update
+  sudo transactional-update pkg install distrobox podman
+  #you should reboot on immutable distros but you can continue without
+  sudo transactional-update apply
+  #on opensuse distrobox is preconfigured with tumbleweed
+  distrobox-enter
   #command used to update distroboxes
   distrobox-upgrade --all
   #update all running distroboxes
@@ -75,7 +83,9 @@ You can now enable and use daemon-reload:
 Flatpaks are isolated apps,you can set them up according to your needs and permissions they should have, if not enabled.
 After this guide,on leap 16.1 immutable, you'll never have to manually update again or even use the software center to do it,
 just use the pc and get the job done without renouncing to your freedom and "do whatever you want approach"....coff coff unlike windows updates... 
-In our case, we want a --noninteractive mode, flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]]
+In our case, we want a --noninteractive mode, flatpak reference docs: [[https://docs.flatpak.org/en/latest/flatpak-command-reference.html]] .
+Before writing the unit file,we have to consider a small detail: you can have flatpaks installed as user or system level, 
+this guide will cover both cases, let's start with user and then system, write them based on your needs:
 
 #+begin_src bash
   [Unit]
@@ -108,6 +118,42 @@ You can now enable and use daemon-reload:
   systemctl --user daemon-reload && systemctl --user enable --now flatpak-upgrade.timer
 #+end_src
 
+*System level configuration*:
+
+#+begin_src bash
+[Unit]
+Description=flatpak-system-upgrade Automatic Update
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=XDG_DATA_DIRS=/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+ExecStart=/usr/bin/flatpak --system update --noninteractive
+
+#+end_src
+[Unit]
+Description=flatpak-system-upgrade Automatic Update
+
+[Timer]
+OnBootSec=1m
+OnUnitInactiveSec=7d
+Persistent=true
+Type=oneshot
+ExecStart=flatpak update --noninteractive
+
+[Install]
+WantedBy=timers.target
+#+begin_src bash
+#+end_src
+
+#+begin_src bash
+#system level commands
+  systemctl enable --now flatpak-system-upgrade.timer
+  systemctl daemon-reload 
+#+end_src
+
+An important difference between system level flatpaks and user level is the type that needs to be changed,from simple to oneshot.
 
 ** Common questions
 - *HOW CAN I REMOVE THEM?*: good question,just remove the services or disable them, obviously when not needed, easy!
