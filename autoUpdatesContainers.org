@@ -169,6 +169,17 @@ An important difference between system level flatpaks and user level is the type
     systemctl --user list-units --type=service
   #+end_src
 
+- *CAN I USE BIN AND APPS INSTALLED INTO THE DISTROBOX?*: yes,in the following example:
+
+   #+begin_src bash
+   #distrobox-export for bin(example for pandoc,installed into the distrobox)
+   distrobox-export --bin /usr/bin/pandoc --export-path ~/.local/bin
+   #distrobox-export for apps(example with steam)
+   distrobox-export --app steam
+   #the exported app's icon will appear on your de app menu
+   #+end_src
+
+The apps and bin exported are part of the distrobox, they are updated as explained in the guide, at this point by a service.
 
 if you read the article until this point, congratulations!, thank you for doing so, you'll find a reward in the next section.
 
